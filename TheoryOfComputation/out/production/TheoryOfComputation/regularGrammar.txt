@@ -1,3 +1,0 @@
-A ::= 1B|0C
-B -> EPSILON
-C -> B

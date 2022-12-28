@@ -2,14 +2,67 @@ package importFile;
 
 import java.util.*;
 
-import importFile.CNFRule;
 
 
 public class NondeterministicFiniteAutomaton {
+
+    // A class to represent a state in the NFA
+    static class State {
+        char stateName;
+        boolean isAccepting;
+        List<Transition> transitions;
+
+        public State(boolean isAccepting) {
+            this.isAccepting = isAccepting;
+            this.transitions = new ArrayList<>();
+        }
+
+        public void setName(char stateName) {
+            this.stateName = stateName;
+        }
+
+        public char getName() {
+            return this.stateName;
+        }
+
+        public List<Transition> getTransition() {
+            return this.transitions;
+        }
+
+        public boolean getAcceptState() {
+            return this.isAccepting;
+        }
+    }
+
+    // A class to represent a transition in the NFA
+    static class Transition {
+        char symbol;
+        State toState;
+
+        public Transition(char symbol, State toState) {
+            this.symbol = symbol;
+            this.toState = toState;
+        }
+
+        public char getSymbol() {
+            return this.symbol;
+        }
+    }
+
+    // A list of all states in the NFA
+    List<State> states;
+
+    // The start state of the NFA
+    State startState;
+
+
+
+    /*
     Set<State> states;
     Set<Transition> transitions;
     State startState;
     Set<State> acceptState;
+    
 
     public NondeterministicFiniteAutomaton(Set<State> states, Set<Transition> transitions, State startState, Set<State> acceptState) {
         this.states = states;
@@ -46,7 +99,6 @@ public class NondeterministicFiniteAutomaton {
 //    public boolean accepts(String input) {
 //        // Implementation of the acceptance algorithm goes here
 //    }
-
 
 
     public static NondeterministicFiniteAutomaton cnfToNFA(CNFRule cnfRule) {
@@ -109,6 +161,7 @@ public class NondeterministicFiniteAutomaton {
         return null;
 
     }
+    
     public static NondeterministicFiniteAutomaton cnfRulesToNFA(List<CNFRule> cnfRules) {
         Set<State> states = new HashSet<>();
         Set<Transition> transitions = new HashSet<>();
@@ -145,16 +198,52 @@ public class NondeterministicFiniteAutomaton {
         // Create and return the NFA
         return new NondeterministicFiniteAutomaton(states, transitions, startState, finalStates);
     }
+    */
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
+    public NondeterministicFiniteAutomaton(List<RegularGrammar> grammarRules) {
 
+        // Create a start state for the NFA
+        this.startState = new State(false);
+
+        // Initialize the list of states
+        this.states = new ArrayList<>();
+        this.states.add(startState);
+
+        // Iterate over the list of regular grammar rules
+        for (RegularGrammar grammarRule : grammarRules) {
+            
+            //State Hierachy
+            //State (A) v
+                //>List<Transition>
+                    //>>symbol (1)
+                    //>>toState (Continue with the next State (B))
+
+            // Create a new state for the nonterminal on the left-hand side of the rule
+            State state /*A*/ = new State(false);
+            this.states.add(state /*A*/);
+
+            // Create a transition from the start state to the new state, labeled with the nonterminal
+            state.setName(grammarRule.nonterminal.charAt(0));
+            startState.transitions.add(new Transition(grammarRule.nonterminal.charAt(0), state));
+
+            char symbol = grammarRule.rightHandSide.charAt(0);
+            State nextState = new State(symbol == 'E'); // # is used to represent a terminal symbol
+            nextState.setName(grammarRule.rightHandSide.charAt(0));
+            this.states.add(nextState);
+            state.transitions.add(new Transition(grammarRule.input, nextState));
+            state = nextState;
+            
+            }
+        }
+    }
+
+    /*
     static class State {
         String name;
         boolean isAccepting;
 
-        public State() {
-
-        }
-
+        public State() {}
 
         public State(String name,boolean isAccepting) {
             this.name = name;
@@ -198,6 +287,7 @@ public class NondeterministicFiniteAutomaton {
             return symbol;
         }
     }
+    
 }
-
+*/
 
