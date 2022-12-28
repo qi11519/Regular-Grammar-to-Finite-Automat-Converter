@@ -12,11 +12,14 @@ import java.util.*;
 
 
 public class JavaFileImport {
+
+    static final char EPSILON = '\u03B5';
     public static void main(String[] args) throws IOException {
         // Read the text file into a list of strings, one string per line
         List<String> textLines = Files.readAllLines(Paths.get("regularGrammar.txt"));
         List<String> ruleStringList = new ArrayList<>();
 
+        final char EPSILON = '\u03B5';
         /*
         // Print the contents of the text file
         for (String line : lines) {
@@ -59,12 +62,24 @@ public class JavaFileImport {
             
             if (toStateName.size() > 0){
                 if (toStateName.get(0).toState.transitions.size() > 0){
+                    //if (toStateName.get(0).toState.transitions.get(0).toState.transitions.size() > 0){
+                    
                     for (int i = 0; i < toStateName.size(); i++){
-                        System.out.println("StartState: "+ toStateName.get(i).toState.getName() +", toState: "+ toStateName.get(i).toState.transitions.get(0).toState.getName() +", Input: "+ toStateName.get(i).toState.transitions.get(0).getSymbol());
+                        if (toStateName.get(i).toState.transitions.get(0).toState.getName() != 'F'){
+                            System.out.println("StartState: "+ toStateName.get(i).toState.getName() +", toState: "+ toStateName.get(i).toState.transitions.get(0).toState.getName() +", Input: "+ toStateName.get(i).toState.transitions.get(0).getSymbol()+", State: "+ toStateName.get(i).toState.transitions.get(0).toState.getAcceptState());
+                        } else {
+                            System.out.println("StartState: "+ toStateName.get(i).toState.getName() +", State: "+ toStateName.get(i).toState.transitions.get(0).toState.getAcceptState() + ", THIS IS ULTIMATE SUPER FINAL STATE");
+                        }
                     }
                 }
             }
         }
+        //A
+            //Symbol: 1
+            //List<Transition>
+                //B
+                    //Symbol: EPSILON
+                    //List<Transition>
 
         System.out.println("-----I AM A LINE-----");
         ////////////////////////////////////////////////////////////////////////
@@ -84,7 +99,7 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", "1");
         System.out.print("| ");
-        System.out.printf("%-5s ", "E");
+        System.out.printf("%-5s ", String.valueOf(EPSILON));
         System.out.println("|");
 
         for (int i = 0; i < 4; i++) {
@@ -102,7 +117,7 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", findNFAResult(grammarRules, 'A', "1"));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(grammarRules, 'A', "E"));
+        System.out.printf("%-5s ", findNFAResult(grammarRules, 'A', String.valueOf(EPSILON)));
         System.out.println("|");
         
         for (int i = 0; i < 4; i++) {
@@ -120,7 +135,7 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", findNFAResult(grammarRules, 'B', "1"));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(grammarRules, 'B', "E"));
+        System.out.printf("%-5s ", findNFAResult(grammarRules, 'B', String.valueOf(EPSILON)));
         System.out.println("|");
         
         for (int i = 0; i < 4; i++) {
@@ -138,7 +153,7 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", findNFAResult(grammarRules, 'C', "1"));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(grammarRules, 'C', "E"));
+        System.out.printf("%-5s ", findNFAResult(grammarRules, 'C', String.valueOf(EPSILON)));
         System.out.println("|");
         
         for (int i = 0; i < 4; i++) {
@@ -174,7 +189,7 @@ public class JavaFileImport {
                         if(toStateName.get(i).toState.getName() == nonTerminal){
 
                             //Compare if input symbol same as the current state column (Exclude E)
-                            if((toStateName.get(i).toState.transitions.get(0).getSymbol() == symbolInput.charAt(0)) && (toStateName.get(i).toState.transitions.get(0).toState.getName() != 'E')){    
+                            if((toStateName.get(i).toState.transitions.get(0).getSymbol() == symbolInput.charAt(0)) && (toStateName.get(i).toState.transitions.get(0).toState.getName() != 'F')){    
                                 
                                 result = String.valueOf(toStateName.get(i).toState.transitions.get(0).toState.getName());
                                 

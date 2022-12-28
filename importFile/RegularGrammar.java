@@ -35,8 +35,10 @@ public class RegularGrammar {
             //Second part is right hand side
             String nonterminal = parsedRule[0].trim(); //Trim remove empty spaces
             String[] rightHandSides = parsedRule[1].split("\\|");
-            char symbolInput = 'E';
-            String terminal = "E";
+            
+            final char EPSILON = '\u03B5';
+            char symbolInput = EPSILON;
+            String terminal = "F";
 
             //Since right side can have multiple result, so store as a list
             List<String> rightHandSideList = new ArrayList<>();
