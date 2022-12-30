@@ -35,8 +35,10 @@ public class RegularGrammar {
             //Second part is right hand side
             String nonterminal = parsedRule[0].trim(); //Trim remove empty spaces
             String[] rightHandSides = parsedRule[1].split("\\|");
-            char symbolInput = 'E';
-            String terminal = "E";
+            
+            final char EPSILON = '\u03B5';
+            char symbolInput = EPSILON;
+            String terminal = "F";
 
             //Since right side can have multiple result, so store as a list
             List<String> rightHandSideList = new ArrayList<>();
@@ -47,13 +49,26 @@ public class RegularGrammar {
 
             //Add into list for each parsed regular grammar rules
             for (int i = 0; i < rightHandSideList.size(); i++) {
-                
+
                 for (int j = 0; j < rightHandSideList.get(i).length(); j++) {
-                    
-                    if (!(nonTerminal.contains(rightHandSideList.get(i).charAt(j)))) {
-                        symbolInput = rightHandSideList.get(i).charAt(j);
+
+                    if ((rightHandSideList.get(i).length() < 2)){
+                        if (!(nonTerminal.contains(rightHandSideList.get(i).charAt(j))) && (rightHandSideList.get(i).charAt(j) != 'F')) {
+
+                            symbolInput = rightHandSideList.get(i).charAt(j);
+                            terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+
+                        } else {
+                            symbolInput = EPSILON;
+                            terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+                        }
                     } else {
-                        terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+                        if (!(nonTerminal.contains(rightHandSideList.get(i).charAt(j)))) {
+
+                            symbolInput = rightHandSideList.get(i).charAt(j);
+                        } else {
+                            terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+                        }
                     }
                 }
                 grammarRules.add(new RegularGrammar(nonterminal, terminal, symbolInput));

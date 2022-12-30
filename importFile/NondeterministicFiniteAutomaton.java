@@ -7,6 +7,9 @@ import java.util.*;
 public class NondeterministicFiniteAutomaton {
 
     // A class to represent a state in the NFA
+    
+    public NondeterministicFiniteAutomaton() {}
+
     static class State {
         char stateName;
         boolean isAccepting;
@@ -203,6 +206,7 @@ public class NondeterministicFiniteAutomaton {
 
     public NondeterministicFiniteAutomaton(List<RegularGrammar> grammarRules) {
 
+        final char EPSILON = '\u03B5';
         // Create a start state for the NFA
         this.startState = new State(false);
 
@@ -219,24 +223,117 @@ public class NondeterministicFiniteAutomaton {
                     //>>symbol (1)
                     //>>toState (Continue with the next State (B))
 
+            State state;
             // Create a new state for the nonterminal on the left-hand side of the rule
-            State state /*A*/ = new State(false);
+            if (grammarRule.rightHandSide.equals("F")){
+                state /*A*/ = new State(true);
+            } else {
+                state /*A*/ = new State(false);
+            }
+
             this.states.add(state /*A*/);
 
             // Create a transition from the start state to the new state, labeled with the nonterminal
             state.setName(grammarRule.nonterminal.charAt(0));
             startState.transitions.add(new Transition(grammarRule.nonterminal.charAt(0), state));
 
-            char symbol = grammarRule.rightHandSide.charAt(0);
-            State nextState = new State(symbol == 'E'); // # is used to represent a terminal symbol
-            nextState.setName(grammarRule.rightHandSide.charAt(0));
-            this.states.add(nextState);
-            state.transitions.add(new Transition(grammarRule.input, nextState));
-            state = nextState;
-            
-            }
+            //if (grammarRule.rightHandSide != null){
+                //char symbol = grammarRule.input;
+                State nextState = new State(grammarRule.rightHandSide.charAt(0) == 'F'); // # is used to represent a terminal symbol
+                nextState.setName(grammarRule.rightHandSide.charAt(0));
+                this.states.add(nextState);
+                state.transitions.add(new Transition(grammarRule.input, nextState));
+                state = nextState;
+            //}
         }
     }
+
+
+    public boolean checkReachFinal(State state1, NondeterministicFiniteAutomaton NFA, List<LinkedList<Character>> visitedStates){
+
+        boolean goFinal = false;
+
+        for (State state : NFA.states){
+
+            boolean checking = true;
+
+            if (state.transitions.size() > 0) {
+
+                if (visitedStates.size() > 0) {
+                    for (LinkedList<Character> checkState : visitedStates){
+                        //System.out.println("rule 1: "+ (checkState.get(0) +" ANDDDD "+state.getName()));
+                        //System.out.println("rule 2: "+ (checkState.get(1) +" ANDDDD "+state.transitions.get(0).toState.getName()));
+                        if (((checkState.get(0) == state.getName()) && (checkState.get(1) == state.transitions.get(0).toState.getName()))) {
+                            //System.out.println("size: "+ visitedStates.size());
+                            checking = false;
+                        }  
+                    } 
+
+                    if (checking) {
+                        if (state.getName() == state1.getName()){
+                            state1 = state;
+
+                            State toState = state1.transitions.get(0).toState;
+
+                            System.out.println("Check " + state1.getName()+" and "+toState.getName());
+
+                            if (toState.getAcceptState() == true){
+                                System.out.println("Spicy!");
+                                goFinal = true;
+                                return goFinal;
+                            } else {
+                                LinkedList<Character> usedState = new LinkedList<>();
+                                usedState.add(state.getName());
+                                usedState.add(state.transitions.get(0).toState.getName());
+                                //System.out.println("They added "+ state.getName() + " & " + state.transitions.get(0).toState.getName());
+                                visitedStates.add(usedState);
+                                goFinal = checkReachFinal(toState, NFA, visitedStates);
+
+                                if (goFinal == true){
+                                    return goFinal;
+                                }
+                            }
+
+                        }
+                    }
+                } else {
+                    //System.out.println("buuppeee");
+                    if (state.getName() == state1.getName()){
+                        state1 = state;
+
+                        State toState = state1.transitions.get(0).toState;
+
+                        //System.out.println("Check " + state1.getName()+" and "+toState.getName());
+
+                        if (toState.getName() == 'F'){
+                            System.out.println("Spicy!");
+                            goFinal = true;
+                            return goFinal;
+                        } else {
+                            LinkedList<Character> usedState = new LinkedList<>();
+                            usedState.add(state.getName());
+                            usedState.add(state.transitions.get(0).toState.getName());
+                            //System.out.println("They added "+ state.getName() + " & " + state.transitions.get(0).toState.getName());
+                            visitedStates.add(usedState);
+                            goFinal = checkReachFinal(toState, NFA, visitedStates);
+
+                            if (goFinal == true){
+                                return goFinal;
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
+
+
+        }
+
+        return goFinal;
+    }
+}
 
     /*
     static class State {

@@ -1,3 +1,6 @@
-A -> 1B|0C
-B -> E
-C -> B|1A
+S -> A|E
+A -> 0A|D
+B -> 0C|D|e
+C -> 0D
+D->  0B|1A
+E ->  1C

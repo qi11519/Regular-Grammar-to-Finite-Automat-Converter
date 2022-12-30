@@ -151,6 +151,12 @@ public class JavaFileImport {
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
         System.out.println("-----I AM A LINE-----");
+
+        NondeterministicFiniteAutomaton n = new NondeterministicFiniteAutomaton();
+
+        List<LinkedList<Character>> visitedStates = new ArrayList<LinkedList<Character>>(); 
+
+        System.out.println(n.checkReachFinal(NFA.states.get(0), NFA, visitedStates));
     }
 
     //FOR PRINTING CORESPONDING RESULT IN THE TABLE
