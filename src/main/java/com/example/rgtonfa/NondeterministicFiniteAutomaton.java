@@ -1,6 +1,7 @@
-package importFile;
+package com.example.rgtonfa;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -204,6 +205,7 @@ public class NondeterministicFiniteAutomaton {
 
     public NondeterministicFiniteAutomaton(List<RegularGrammar> grammarRules) {
 
+        final char EPSILON = '\u03B5';
         // Create a start state for the NFA
         this.startState = new State(false);
 
@@ -220,24 +222,31 @@ public class NondeterministicFiniteAutomaton {
                     //>>symbol (1)
                     //>>toState (Continue with the next State (B))
 
+            State state;
             // Create a new state for the nonterminal on the left-hand side of the rule
-            State state /*A*/ = new State(false);
+            if (grammarRule.rightHandSide.equals("E")){
+                state /*A*/ = new State(true);
+            } else {
+                state /*A*/ = new State(false);
+            }
+
             this.states.add(state /*A*/);
 
             // Create a transition from the start state to the new state, labeled with the nonterminal
             state.setName(grammarRule.nonterminal.charAt(0));
             startState.transitions.add(new Transition(grammarRule.nonterminal.charAt(0), state));
 
-            char symbol = grammarRule.rightHandSide.charAt(0);
-            State nextState = new State(symbol == 'E'); // # is used to represent a terminal symbol
-            nextState.setName(grammarRule.rightHandSide.charAt(0));
-            this.states.add(nextState);
-            state.transitions.add(new Transition(grammarRule.input, nextState));
-            state = nextState;
-            
-            }
+            //if (grammarRule.rightHandSide != null){
+                char symbol = grammarRule.input;
+                State nextState = new State(symbol == EPSILON); // # is used to represent a terminal symbol
+                nextState.setName(grammarRule.rightHandSide.charAt(0));
+                this.states.add(nextState);
+                state.transitions.add(new Transition(grammarRule.input, nextState));
+                state = nextState;
+            //}
         }
     }
+}
 
     /*
     static class State {
