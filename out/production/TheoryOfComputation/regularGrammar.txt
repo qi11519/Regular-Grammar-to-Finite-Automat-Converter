@@ -1,3 +1,9 @@
+<<<<<<< Updated upstream
 A -> 1B|0C
 B -> ε
 C -> B|1A
+=======
+A -> 0C|1B
+B -> ε
+C -> 1A|B
+>>>>>>> Stashed changes
