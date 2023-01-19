@@ -152,12 +152,12 @@
                               <Font size="16.0" />
                            </font>
                         </Button>
-                        <Button layoutX="79.0" layoutY="313.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="90.0" text="NFA">
+                        <Button fx:id="nfaButton" layoutX="79.0" layoutY="313.0" mnemonicParsing="false" onAction="#onNfaButtonClick" prefHeight="38.0" prefWidth="90.0" text="NFA">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Button>
-                        <Button layoutX="79.0" layoutY="363.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="90.0" text="NFA → ε">
+                        <Button fx:id="nfaEpsilonButton" layoutX="79.0" layoutY="363.0" mnemonicParsing="false" onAction="#onNfaEpsilon" prefHeight="38.0" prefWidth="90.0" text="NFA → ε">
                            <font>
                               <Font size="16.0" />
                            </font>
