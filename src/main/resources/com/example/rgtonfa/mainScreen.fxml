@@ -142,7 +142,7 @@
                            <font>
                               <Font size="20.0" />
                            </font></TextArea>
-                        <Button fx:id="btnImport" layoutX="345.0" layoutY="234.0" mnemonicParsing="false" text="Import">
+                        <Button fx:id="btnImport" layoutX="345.0" layoutY="234.0" mnemonicParsing="false" onAction="#onBtnImport" text="Import">
                            <font>
                               <Font size="16.0" />
                            </font>

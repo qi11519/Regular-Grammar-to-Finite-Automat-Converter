@@ -89,9 +89,9 @@ public class mainScreenController {
 
 
     @FXML
-    void onEpsilonClick(ActionEvent event) {
+    void onEpsilonClick(ActionEvent event) throws IOException {
         //displayDiagram();
-        inputArea.appendText("ε");
+
 
     }
 
@@ -181,8 +181,12 @@ public class mainScreenController {
         //add column to table
         stateTable.getColumns().addAll(stateCol, inputCol1, inputCol2,inputCol3);
 
+
+    ///here are place to give data to it dynamic
         char[] states = {'A', 'B', 'C'};
         char[] inputs = {'0', '1', EPSILON};
+
+
         String[][] dataArray = new String[states.length][inputs.length+1];
 
         for (int i = 0; i < states.length; i++) {
@@ -278,6 +282,8 @@ public class mainScreenController {
         }
         System.out.println("+");
 
+        //here are place to give data dynamic
+
         char[] states = {'A', 'B'};
         char[] inputs = {'0', '1'};
 
@@ -337,6 +343,14 @@ public class mainScreenController {
         return ruleStringList;
 
 
+    }
+    @FXML
+    void onBtnImport(ActionEvent event) throws IOException {
+        List<String> ruleStringList = readFile();
+
+        for (String rule : ruleStringList) {
+            inputArea.appendText(rule + "\n");
+        }
     }
 
 
