@@ -5,8 +5,8 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.List;
 
-import importFile.NondeterministicFiniteAutomaton.State;
-import importFile.NondeterministicFiniteAutomaton.Transition;
+import importFile.FiniteAutomat.State;
+import importFile.FiniteAutomat.Transition;
 
 import java.util.*;
 
@@ -38,10 +38,10 @@ public class JavaFileImport {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         //Convert RegularGrammar into NFA
-        NondeterministicFiniteAutomaton NFA = new NondeterministicFiniteAutomaton(grammarRules);
+        FiniteAutomat finite_automat = new FiniteAutomat(grammarRules);
 
         //Print each state of NFA
-        for (State state : NFA.states) {
+        for (State state : finite_automat.states) {
             List<Transition> toStateName = state.getTransition();
             
             if (toStateName.size() > 0){ //Making sure it only print State with transition
@@ -85,11 +85,11 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", "A");
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'A', '0'));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'A', '0'));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'A', '1'));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'A', '1'));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'A', EPSILON));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'A', EPSILON));
         System.out.println("|");
         
         for (int i = 0; i < 4; i++) {
@@ -103,11 +103,11 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", "B");
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'B', '0'));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'B', '0'));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'B', '1'));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'B', '1'));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'B', EPSILON));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'B', EPSILON));
         System.out.println("|");
         
         for (int i = 0; i < 4; i++) {
@@ -121,11 +121,11 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", "C");
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'C', '0'));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'C', '0'));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'C', '1'));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'C', '1'));
         System.out.print("| ");
-        System.out.printf("%-5s ", findNFAResult(NFA, 'C', EPSILON));
+        System.out.printf("%-5s ", findNFAResult(finite_automat, 'C', EPSILON));
         System.out.println("|");
         
         for (int i = 0; i < 4; i++) {
@@ -141,13 +141,13 @@ public class JavaFileImport {
 
         //For the purpose of calling the function 
         //from the 'NondeterministicFiniteAutomaton' class
-        NondeterministicFiniteAutomaton n = new NondeterministicFiniteAutomaton();
+        FiniteAutomat fa = new FiniteAutomat();
 
         //Keep track of which state/rule being visited
         List<LinkedList<Character>> visitedStates = new ArrayList<LinkedList<Character>>(); 
 
         //Output of all state and its possible transition
-        for (State state : NFA.states) {
+        for (State state : finite_automat.states) {
             for (Transition transitions : state.transitions){
                 System.out.println(state.getName() + " to " + transitions.toState.getName());
             }
@@ -157,7 +157,7 @@ public class JavaFileImport {
         //if a state can reach final state
         //NFA.states.get(1) ---IS---> State A
         //then it will test if A can reach final state
-        System.out.println(n.checkReachFinal(NFA.states.get(1), NFA, visitedStates));
+        System.out.println(fa.checkReachFinal(finite_automat.states.get(1), finite_automat, visitedStates));
 
         System.out.println("-----I AM A LINE-----");
 
@@ -165,21 +165,21 @@ public class JavaFileImport {
         List<State> StatesWithoutEpsilon = new ArrayList<State>();
         
         //Templist that stored the states of NFA
-        List<State> oldStateList = NFA.states;
+        List<State> oldStateList = finite_automat.states;
 
         //Convert states with EPSILON into without EPSILON, then add into the templist
-        StatesWithoutEpsilon = n.renewStates(NFA, oldStateList);
+        StatesWithoutEpsilon = fa.renewStates(finite_automat, oldStateList);
 
         System.out.println("-----I AM A LINE-----");
         
         //Replace the current list of states of the NFA, which make it become NFA without EPSILON
-        NFA.setStateList(StatesWithoutEpsilon);
+        finite_automat.setStateList(StatesWithoutEpsilon);
 
-        for (State state : NFA.states) { 
+        for (State state : finite_automat.states) { 
             List<Transition> toStateName = state.getTransition();
 
             for (Transition transition : toStateName) {
-                System.out.println("StartState: "+ state.getName() +", toState: "+ transition.toState.getName() +", Input: "+ transition.getSymbol());
+                System.out.println("StartState: "+ state.getName() +", toState: "+ transition.toState.getName() +", Input: "+ transition.getSymbol() +", Status: "+ state.getAcceptState());
             }
         }
         
@@ -214,16 +214,16 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", "A");
         System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'A', '0')){
-            if (findNFAwithoutEpsilonResult(NFA, 'A', '0').size() > 1){
+        for (String foundState : findNFAwithoutEpsilonResult(finite_automat, 'A', '0')){
+            if (findNFAwithoutEpsilonResult(finite_automat, 'A', '0').size() > 1){
                 System.out.printf("%-2s ", foundState, ",");
             } else {
                 System.out.printf("%-5s ", foundState);
             }
         }
         System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'A', '1')){
-            if (findNFAwithoutEpsilonResult(NFA, 'A', '1').size() > 1){
+        for (String foundState : findNFAwithoutEpsilonResult(finite_automat, 'A', '1')){
+            if (findNFAwithoutEpsilonResult(finite_automat, 'A', '1').size() > 1){
                 System.out.printf("%-2s ", foundState, ",");
             } else {
                 System.out.printf("%-5s ", foundState);
@@ -242,16 +242,16 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", "B");
         System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'B', '0')){
-            if (findNFAwithoutEpsilonResult(NFA, 'B', '0').size() > 1){
+        for (String foundState : findNFAwithoutEpsilonResult(finite_automat, 'B', '0')){
+            if (findNFAwithoutEpsilonResult(finite_automat, 'B', '0').size() > 1){
                 System.out.printf("%-2s ", foundState);
             } else {
                 System.out.printf("%-5s ", foundState);
             }
         }
         System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'B', '1')){
-            if (findNFAwithoutEpsilonResult(NFA, 'B', '1').size() > 1){
+        for (String foundState : findNFAwithoutEpsilonResult(finite_automat, 'B', '1')){
+            if (findNFAwithoutEpsilonResult(finite_automat, 'B', '1').size() > 1){
                 System.out.printf("%-2s ", foundState);
             } else {
                 System.out.printf("%-5s ", foundState);
@@ -270,16 +270,16 @@ public class JavaFileImport {
         System.out.print("| ");
         System.out.printf("%-5s ", "C");
         System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'C', '0')){
-            if (findNFAwithoutEpsilonResult(NFA, 'C', '0').size() > 1){
+        for (String foundState : findNFAwithoutEpsilonResult(finite_automat, 'C', '0')){
+            if (findNFAwithoutEpsilonResult(finite_automat, 'C', '0').size() > 1){
                 System.out.printf("%-2s ", foundState);
             } else {
                 System.out.printf("%-5s ", foundState);
             }
         }
         System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'C', '1')){
-            if (findNFAwithoutEpsilonResult(NFA, 'C', '1').size() > 1){
+        for (String foundState : findNFAwithoutEpsilonResult(finite_automat, 'C', '1')){
+            if (findNFAwithoutEpsilonResult(finite_automat, 'C', '1').size() > 1){
                 System.out.printf("%-2s ", foundState);
             } else {
                 System.out.printf("%-5s ", foundState);
@@ -297,12 +297,51 @@ public class JavaFileImport {
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
         System.out.println("-----I AM A LINE-----");
+        System.out.println("-----DFA-----");
+        
+        //Templist for storing the list of states of NFA without Epsilon
+        List<State> dfaStates = new ArrayList<State>();
+        
+        //Templist that stored the states of NFA
+        List<State> oldStateListwoEPSILON = finite_automat.states;
+
+        dfaStates = fa.convertToDFA(finite_automat, oldStateListwoEPSILON);
+
+        //Replace the current list of states of the NFA, which make it become NFA without EPSILON
+        finite_automat.setStateList(dfaStates);
+
+        for (State state : finite_automat.states) { 
+            //System.out.println("StartState: "+ state.getName() + ", Status: "+ state.getAcceptState() + ", Their transistion: " + state.transitions.size());
+            List<Transition> toStateName = state.getTransition();
+
+            for (Transition transition : toStateName) {
+                System.out.println("StartState: "+ state.getName() +", toState: "+ transition.toState.getName() +", Input: "+ transition.getSymbol() +", Status: "+ state.getAcceptState());
+            }
+        }
+        
+
+        System.out.println("-----I AM A LINE-----");
+        System.out.println("-----MIN_DFA-----");
+
+        List<State> minDfaStates = new ArrayList<State>();
+        minDfaStates = fa.minimizeState(dfaStates);
+
+        finite_automat.setStateList(minDfaStates);
+
+        for (State state : finite_automat.states) { 
+            //System.out.println("StartState: "+ state.getName() + ", Status: "+ state.getAcceptState() + ", Their transistion: " + state.transitions.size());
+            List<Transition> toStateName = state.getTransition();
+
+            for (Transition transition : toStateName) {
+                System.out.println("StartState: "+ state.getName() +", toState: "+ transition.toState.getName() +", Input: "+ transition.getSymbol() +", Status: "+ state.getAcceptState());
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //NFA RESULT IN TABLE
     //FOR PRINTING CORESPONDING RESULT IN THE TABLE
-    public static String findNFAResult(NondeterministicFiniteAutomaton NFA, char nonTerminal, char symbolInput){
+    public static String findNFAResult(FiniteAutomat NFA, char nonTerminal, char symbolInput){
         
         String result = "X";
 
@@ -319,10 +358,10 @@ public class JavaFileImport {
                     for (int i = 0; i < toStateName.size(); i++){
                         
                         //Compare if starting state same as the current state row
-                        if(toStateName.get(i).toState.getName() == nonTerminal){
+                        if(toStateName.get(i).toState.getName().charAt(0) == nonTerminal){
 
                             //Compare if input symbol same as the current state column (Exclude E)
-                            if((toStateName.get(i).toState.transitions.get(0).getSymbol() == symbolInput) && (toStateName.get(i).toState.transitions.get(0).toState.getName() != EPSILON)){    
+                            if((toStateName.get(i).toState.transitions.get(0).getSymbol() == symbolInput) && (toStateName.get(i).toState.transitions.get(0).toState.getName().charAt(0) != EPSILON)){    
                                 
                                 result = String.valueOf(toStateName.get(i).toState.transitions.get(0).toState.getName());
                                 
@@ -337,7 +376,7 @@ public class JavaFileImport {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //NFA WITHOUT EPSILON IN TABLE
     //FOR PRINTING CORESPONDING RESULT IN THE TABLE
-    public static List<String> findNFAwithoutEpsilonResult(NondeterministicFiniteAutomaton NFAwithoutEpsilon, char nonTerminal, char symbolInput){
+    public static List<String> findNFAwithoutEpsilonResult(FiniteAutomat NFAwithoutEpsilon, char nonTerminal, char symbolInput){
         
         //List for storing result
         List<String> resultList = new ArrayList<>();
@@ -355,10 +394,10 @@ public class JavaFileImport {
                 for (int i = 0; i < toStateName.size(); i++){
                     
                     //Compare if starting state same as the current state row
-                    if(state.getName() == nonTerminal){
+                    if(state.getName().charAt(0) == nonTerminal){
 
                         //Compare if input symbol same as the current state column (Exclude E)
-                        if((toStateName.get(i).getSymbol() == symbolInput) && (toStateName.get(i).toState.getName() != EPSILON)){    
+                        if((toStateName.get(i).getSymbol() == symbolInput) && (toStateName.get(i).toState.getName().charAt(0) != EPSILON)){    
                             
                             resultList.add(String.valueOf(toStateName.get(i).toState.getName()));
                             

@@ -38,7 +38,7 @@ public class RegularGrammar {
             
             final char EPSILON = '\u03B5';
             char symbolInput = EPSILON;
-            String terminal = "F"; //Temporary 
+            String terminal = String.valueOf(EPSILON); //Temporary 
 
             //Since right side can have multiple result, so store as a list
             List<String> rightHandSideList = new ArrayList<>();
@@ -81,5 +81,3 @@ public class RegularGrammar {
     }
 
 }
-
-//check one character contain in a list in java?
