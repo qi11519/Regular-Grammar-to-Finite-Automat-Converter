@@ -97,7 +97,7 @@ public class mainScreenController {
 
     @FXML
     void onArrowClick(ActionEvent event) throws IOException {
-        clearAndAdd();
+        //clearAndAdd();
         inputArea.appendText("→");
 
     }
@@ -108,62 +108,62 @@ public class mainScreenController {
 
     }
     //use to draw
-    void displayDiagram(){
-        Canvas canvas = new Canvas();
-        canvas.setWidth(300);
-        canvas.setHeight(300);
-        canvas.setLayoutX(40);
-        canvas.setLayoutY(40);
-        gc = canvas.getGraphicsContext2D();
+//    void displayDiagram(){
+//        Canvas canvas = new Canvas();
+//        canvas.setWidth(300);
+//        canvas.setHeight(300);
+//        canvas.setLayoutX(40);
+//        canvas.setLayoutY(40);
+//        gc = canvas.getGraphicsContext2D();
+//
+//        //set line
+//
+//        gc.setStroke(Color.BLUE);
+//        gc.setLineWidth(4);
+//        //  gc.strokeLine(w,x,y,z);
+//        // w and x represent the x and y coordinates of the start point of the line. y and z represent the x and y coordinates of the end point of the line.
+//        gc.strokeLine(1,4,2, 10);
+//
+//        //set circle
+//
+//        gc.setStroke(Color.RED);
+//        gc.setLineWidth(4);
+//
+//        gc.strokeOval(10, 20, 40, 40);
+//
+//
+//        //text given
+//        gc.setStroke(Color.BLACK);
+//        gc.setLineWidth(1);
+//        gc.setFont(new Font("Arial", 20));
+//        gc.strokeText("Hello World!", 10, 50);
+//
+//
+//        drawArea.getChildren().add(canvas);
+//        primaryStage.show();
+//    }
 
-        //set line
-
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(4);
-        //  gc.strokeLine(w,x,y,z);
-        // w and x represent the x and y coordinates of the start point of the line. y and z represent the x and y coordinates of the end point of the line.
-        gc.strokeLine(1,4,2, 10);
-
-        //set circle
-
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(4);
-
-        gc.strokeOval(10, 20, 40, 40);
-
-
-        //text given
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1);
-        gc.setFont(new Font("Arial", 20));
-        gc.strokeText("Hello World!", 10, 50);
-
-
-        drawArea.getChildren().add(canvas);
-        primaryStage.show();
-    }
-
-    void clearAndAdd(){
-        stateTable.getItems().clear();
-        String[][] newDataArray = new String[][] {
-                {"D", "0", "E"},
-                {"E", "1", "F"},
-                {"F", "epsilon", "D"}
-        };
-        stateTable.getColumns().clear();
-// Create columns and set column titles
-        TableColumn<String[], String> stateCol = new TableColumn<>("State");
-        TableColumn<String[], String> inputCol = new TableColumn<>("Input");
-        TableColumn<String[], String> nextCol = new TableColumn<>("Next State");
-        stateTable.getColumns().addAll(stateCol, inputCol, nextCol);
-        stateCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[0]));
-        inputCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[1]));
-        nextCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[2]));
-        stateTable.setItems(FXCollections.observableArrayList(newDataArray));
-        stateTable.refresh();
-
-
-    }
+//    void clearAndAdd(){
+//        stateTable.getItems().clear();
+//        String[][] newDataArray = new String[][] {
+//                {"D", "0", "E"},
+//                {"E", "1", "F"},
+//                {"F", "epsilon", "D"}
+//        };
+//        stateTable.getColumns().clear();
+//// Create columns and set column titles
+//        TableColumn<String[], String> stateCol = new TableColumn<>("State");
+//        TableColumn<String[], String> inputCol = new TableColumn<>("Input");
+//        TableColumn<String[], String> nextCol = new TableColumn<>("Next State");
+//        stateTable.getColumns().addAll(stateCol, inputCol, nextCol);
+//        stateCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[0]));
+//        inputCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[1]));
+//        nextCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[2]));
+//        stateTable.setItems(FXCollections.observableArrayList(newDataArray));
+//        stateTable.refresh();
+//
+//
+//    }
     @FXML
     void onNfaButtonClick(ActionEvent event) throws IOException {
         stateTable.getItems().clear();
@@ -181,10 +181,16 @@ public class mainScreenController {
         //add column to table
         stateTable.getColumns().addAll(stateCol, inputCol1, inputCol2,inputCol3);
 
-        dataArray[0]= new String[]{"A", findNFAResult(NFA, 'A', '0'), findNFAResult(NFA, 'A', '1'),findNFAResult(NFA, 'A', EPSILON)};
-        dataArray[1]=new String[]{"B", findNFAResult(NFA, 'B', '0'), findNFAResult(NFA, 'B', '1'),findNFAResult(NFA, 'B', EPSILON)};
-        dataArray[2]=new String[]{"C", findNFAResult(NFA, 'C', '0'), findNFAResult(NFA, 'C', '1'),findNFAResult(NFA, 'C', EPSILON)};
+        char[] states = {'A', 'B', 'C'};
+        char[] inputs = {'0', '1', EPSILON};
+        String[][] dataArray = new String[states.length][inputs.length+1];
 
+        for (int i = 0; i < states.length; i++) {
+            dataArray[i][0] = Character.toString(states[i]);
+            for (int j = 0; j < inputs.length; j++) {
+                dataArray[i][j+1] = findNFAResult(NFA, states[i], inputs[j]);
+            }
+        }
 
         //give a target for column to read the data, 0 represent the column will read [x][0] data
         stateCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[0]));
@@ -247,7 +253,7 @@ public class mainScreenController {
         System.out.println("-----I AM A LINE-----");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        //PRINT A TABLE FOR NFA WITHOUT EPSILON
+        //PRINT A TABLE FOR NFA WITHOUT EPSILON, and set data to java fx
         for (int i = 0; i < 3; i++) {
             System.out.print("+");
             for (int j = 0; j < 7 ; j++) {
@@ -255,7 +261,7 @@ public class mainScreenController {
             }
         }
         System.out.println("+");
-        ///////////////////////////////////////////
+
         System.out.print("| ");
         System.out.printf("%-5s ", "XXX");
         System.out.print("| ");
@@ -271,153 +277,32 @@ public class mainScreenController {
             }
         }
         System.out.println("+");
-        ///////////////////////////////////////////
-        System.out.print("| ");
-        System.out.printf("%-5s ", "A");
-        System.out.print("| ");
 
-        // create new A data
-        dataArray[0][0]="A";
-        //create a0 data
-        String a0="";
+        char[] states = {'A', 'B'};
+        char[] inputs = {'0', '1'};
 
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'A', '0')){
-            if (findNFAwithoutEpsilonResult(NFA, 'A', '0').size() > 1){
-                a0+=foundState+" ";
+        for (int i = 0; i < states.length; i++) {
 
-
-                System.out.printf("%-2s ", foundState, ",");
-
-            } else {
-                a0+=foundState+" ";
-                //dataArray[0][1]=foundState;
-                System.out.printf("%-5s ", foundState);
+            System.out.printf("|%-5s  ", states[i]);
+            dataArray[i][0] = Character.toString(states[i]);
+            for (int j = 0; j < inputs.length; j++) {
+                System.out.print("| ");
+                String result = "";
+                for (String foundState : findNFAwithoutEpsilonResult(NFA, states[i], inputs[j])) {
+                    result += foundState + " ";
+                    System.out.printf("%-2s    ", foundState);
+                }
+                dataArray[i][j+1] = result;
             }
-        }
-        dataArray[0][1]=a0;
-
-        //create a1 data
-        String a1="";
-        System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'A', '1')){
-            if (findNFAwithoutEpsilonResult(NFA, 'A', '1').size() > 1){
-                a1+=foundState+"    ";
-                //dataArray[0][2]=foundState;
-                System.out.printf("%-2s ", foundState, ",");
-            } else {
-               // dataArray[0][2]=foundState;
-                a1+=foundState+" ";
-                System.out.printf("%-5s ", foundState);
+            System.out.println("| ");
+            for (int k = 0; k < 3; k++) {
+                System.out.print("+");
+                for (int l = 0; l < 7 ; l++) {
+                    System.out.print("-");
+                }
             }
+            System.out.println("+");
         }
-        dataArray[0][2]=a1;
-        System.out.println("| ");
-
-        for (int i = 0; i < 3; i++) {
-            System.out.print("+");
-            for (int j = 0; j < 7 ; j++) {
-                System.out.print("-");
-            }
-        }
-        System.out.println("+");
-        ///////////////////////////////////////////
-        System.out.print("| ");
-        System.out.printf("%-5s ", "B");
-        System.out.print("| ");
-
-
-        //create B new data
-        dataArray[1][0]="B";
-        //create B0 data
-        String b0="";
-
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'B', '0')){
-            if (findNFAwithoutEpsilonResult(NFA, 'B', '0').size() > 1){
-               // dataArray[1][1]=foundState;
-                b0+=foundState+" ";
-                System.out.printf("%-2s ", foundState);
-            } else {
-               // dataArray[1][1]=foundState;
-                b0+=foundState+" ";
-                System.out.printf("%-5s ", foundState);
-            }
-
-        }
-        dataArray[1][1]=b0;
-
-
-        //create b1 data
-        String b1="";
-        System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'B', '1')){
-            if (findNFAwithoutEpsilonResult(NFA, 'B', '1').size() > 1){
-              //  dataArray[1][2]=foundState;
-                b1+=foundState+" ";
-                System.out.printf("%-2s ", foundState);
-            } else {
-                b1+=foundState+" ";
-              //  dataArray[1][2]=foundState;
-                System.out.printf("%-5s ", foundState);
-            }
-        }
-        dataArray[1][2]=b1;
-        System.out.println("| ");
-
-        for (int i = 0; i < 3; i++) {
-            System.out.print("+");
-            for (int j = 0; j < 7 ; j++) {
-                System.out.print("-");
-            }
-        }
-        System.out.println("+");
-        ///////////////////////////////////////////
-        System.out.print("| ");
-        System.out.printf("%-5s ", "C");
-        System.out.print("| ");
-
-        //create new C data
-        dataArray[2][0]="C";
-        String c0="";
-
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'C', '0')){
-            if (findNFAwithoutEpsilonResult(NFA, 'C', '0').size() > 1){
-               // dataArray[2][1]=foundState;
-                c0+=foundState+" ";
-                System.out.printf("%-2s ", foundState);
-            } else {
-               // dataArray[2][1]=foundState;
-                c0+=foundState+" ";
-                System.out.printf("%-5s ", foundState);
-            }
-        }
-        dataArray[2][1]=c0;
-
-
-
-        //create data c1
-        String c1="";
-        System.out.print("| ");
-        for (String foundState : findNFAwithoutEpsilonResult(NFA, 'C', '1')){
-            if (findNFAwithoutEpsilonResult(NFA, 'C', '1').size() > 1){
-                c1+=foundState+" ";
-                //dataArray[2][2]=foundState;
-                System.out.printf("%-2s ", foundState);
-            } else {
-               // dataArray[2][2]=foundState;
-                c1+=foundState+" ";
-                System.out.printf("%-5s ", foundState);
-            }
-        }
-        dataArray[2][2]=c1;
-        System.out.println("| ");
-
-        for (int i = 0; i < 3; i++) {
-            System.out.print("+");
-            for (int j = 0; j < 7 ; j++) {
-                System.out.print("-");
-            }
-        }
-        System.out.println("+");
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
         System.out.println("-----I AM A LINE-----");
@@ -441,10 +326,6 @@ public class mainScreenController {
     List<String> readFile() throws IOException {
         List<String> textLines = Files.readAllLines(Paths.get("regularGrammar.txt"));
         List<String> ruleStringList = new ArrayList<>();
-
-
-
-
 
         //Turn the the content from 'regularGrammar.txt' content into
         //Each grammar rule per line
