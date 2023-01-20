@@ -80,13 +80,18 @@ public class FiniteAutomat {
 
     // The start state of the NFA
     State startState;
+    String startingState;
 
     public void setStateList(List<State> states) {
         this.states = states;
     }
 
-    public String getStartState() {
-        return startState.getName();
+    public void setStartingState(String startingState) {
+        this.startingState = startingState;
+    }
+
+    public String getStartingState() {
+        return startingState;
     }
 
     //Example, A -> 1B
@@ -119,6 +124,8 @@ public class FiniteAutomat {
     ////////////////////////////////////////////////////////////////////////////////////////////
     //Convert RegularGrammar into NFA
     public FiniteAutomat(List<RegularGrammar> grammarRules) {
+
+        boolean firstState = true;
 
         final char EPSILON = '\u03B5';
         // Create a start state for the NFA
@@ -159,6 +166,11 @@ public class FiniteAutomat {
             state.setName(String.valueOf(grammarRule.nonterminal.charAt(0)));
             startState.transitions.add(new Transition(grammarRule.nonterminal.charAt(0), state));
 
+            if (firstState){
+                this.startingState = state.getName();
+                firstState = false;
+            }
+
             //Initialize the next state 
             State nextState = new State(checking); //Intialize with previous checking result as "isAccepting" attribute
             nextState.setName(String.valueOf(grammarRule.rightHandSide.charAt(0))); //Set name
@@ -166,118 +178,6 @@ public class FiniteAutomat {
             state.transitions.add(new Transition(grammarRule.input, nextState)); //Add transition to the next state
             state = nextState; //Move to the next state
         }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //To check if a specific transition from a state can possibly reach final state
-    public boolean checkReachFinal(State state1, FiniteAutomat NFA, List<LinkedList<Character>> visitedStates){
-
-        //For checking if it reach final
-        boolean goFinal = false;
-
-        final char EPSILON = '\u03B5';
-
-        //System.out.println("Current Checking Rule: "+ (state1.getName()));
-
-        for (State state : NFA.states){
-            
-            boolean checking = true; //for checking if the state inside the visitedState list
-
-            if (!(state.transitions.isEmpty())) {
-
-                //check if there is any visited states throughout the checking
-                if (!(visitedStates.isEmpty())) {
-                    for (LinkedList<Character> checkState : visitedStates){
-                        //Compare states and visided states each by each
-                        //if false, means the current state's transition is visited, 
-                        //then change to the next possible transition
-                        if (state.getName() != null){
-                            if (((checkState.get(0) == state.getName().charAt(0)))) {
-                                //if true, then proceed with the following steps
-                                for (Transition nextState : state.transitions){
-                                    if (checkState.get(1) == nextState.toState.getName().charAt(0)) {
-                                        checking = false; //the state's transition has visited before
-                                    }
-                                }          
-                            }  
-                        }
-                    } 
-
-                    //if the state's transition is not visited
-                    if (checking) {
-                        if (state.getName() == state1.getName()){
-                            state1 = state;//temp state
-
-                            State toState = state1.transitions.get(0).toState; //next state of the transition
-
-                            //System.out.println("Found " + state1.getName()+" and "+toState.getName());
-
-                            if (toState.getName().charAt(0) == EPSILON){
-                                goFinal = true;
-                                return goFinal;
-                            /*
-                            if (toState.getAcceptState() == true){ //if the next state is accept/final state
-                                goFinal = true;
-                                return goFinal; //return true, means current state can reach accept/final state
-                            */
-                            } else {
-                                
-                                //if current state not able to reach accept/final state
-                                //add the current state and its transition to "usedState" list,
-                                //then add once again into the visitedStates, 
-                                //so the algorithm won't recheck same transition again
-                                LinkedList<Character> usedState = new LinkedList<>();
-                                usedState.add(state.getName().charAt(0));
-                                usedState.add(state.transitions.get(0).toState.getName().charAt(0));
-                                //System.out.println("They added "+ state.getName() + " & " + state.transitions.get(0).toState.getName());
-                                visitedStates.add(usedState);
-
-                                //Proceed with recursion
-                                //Then return true if it finds the state reachable.
-                                goFinal = checkReachFinal(toState, NFA, visitedStates);
-
-                                if (goFinal == true){
-                                    return goFinal;
-                                }
-                            }
-
-                        }
-                    }
-                } else { //if the "visitedStates" list is empty, then directly check current state if it reach final
-                    if (state.getName() == state1.getName()){
-                        state1 = state;//temp state
-
-                        State toState = state1.transitions.get(0).toState; //next state of the transition
-
-                        //System.out.println("Check " + state1.getName()+" and "+toState.getName());
-
-                        if (toState.getName().charAt(0) == EPSILON){
-                            goFinal = true;
-                            return goFinal;
-                        } else {
-                            //if current state not able to reach accept/final state
-                            //add the current state and its transition to "usedState" list,
-                            //then add once again into the visitedStates, 
-                            //so the algorithm won't recheck same transition again
-                            LinkedList<Character> usedState = new LinkedList<>();
-                            usedState.add(state.getName().charAt(0));
-                            usedState.add(state.transitions.get(0).toState.getName().charAt(0));
-                            //System.out.println("They added "+ state.getName() + " & " + state.transitions.get(0).toState.getName());
-                            visitedStates.add(usedState);
-                            
-                            //Proceed with recursion
-                            //Then return true if it finds the state reachable.
-                            goFinal = checkReachFinal(toState, NFA, visitedStates);
-
-                            if (goFinal == true){
-                                return goFinal; 
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return goFinal; //return the verify result
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -498,14 +398,14 @@ public class FiniteAutomat {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public List<State> convertToDFA(FiniteAutomat NFA, List<State> oldStateList) {
+    public List<State> convertToDFA(FiniteAutomat NFAwoEpsilon, List<State> oldStateList) {
         // Create a set to hold the current states
         //Set<State> currentStates = new HashSet<>();
         // Add the start state to the set
         //currentStates.add(this.startState);
 
         // Create a list to hold the next states
-        List<State> nextStates = NFA.states;
+        List<State> nextStates = NFAwoEpsilon.states;
         List<State> updatedStates = new ArrayList<>();
 
         //Keep track of which state/rule being visited
@@ -525,12 +425,8 @@ public class FiniteAutomat {
         rejectState.transitions.add(new Transition('1', emptyToState)); //Set transition
 
         updatedStates.add(rejectState);
-        
-        //State startState = newState;
-        //states.clear();
-        //states.add(newState);
 
-        for (State state: NFA.states){
+        for (State state: NFAwoEpsilon.states){
 
             //System.out.println(state.getName());
             if (state.getName() != null){
@@ -653,17 +549,6 @@ public class FiniteAutomat {
         updatedStates.add(newAllState);
 
         updatedStates = renameState(updatedStates);
-
-        /*
-        for (State state : updatedStates) { 
-            //System.out.println("This State: "+ state.getName() + ", Their transistion: " + state.transitions.size());
-            List<Transition> toStateName = state.getTransition();
-
-            for (Transition transition : toStateName) {
-                System.out.println("StartState: "+ state.getName() +", toState: "+ transition.toState.getName() +", Input: "+ transition.getSymbol() +", Status: "+ state.getAcceptState());
-            }
-        }
-        */
 
         return updatedStates;
     }
@@ -931,5 +816,58 @@ public class FiniteAutomat {
         
         return stateList;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public boolean testInput(String input, FiniteAutomat DFA) {
+
+        State startingState = this.startState;
+        boolean result = false;
+
+        //System.out.println(startingState.getName());
+        for (State tempStartState : DFA.states){
+            //System.out.println(tempStartState.getName()+" vs "+DFA.getStartingState());
+            if (tempStartState.getName().equals(DFA.getStartingState())){
+                startingState = tempStartState;
+            }
+        }
+
+        State currentState = startingState;
+        for (char c : input.toCharArray()) {
+            System.out.println("Input : "+c);
+            if (currentState != null){
+                for (State tempCurrentState : DFA.states){
+                    if (tempCurrentState.getName().equals(currentState.getName())){
+                        currentState = tempCurrentState;
+                        System.out.println("Current : "+currentState.getName());
+                    }
+                }
+            }
+
+            currentState = DFA.getNextState(currentState, c);
+        }
+
+        for (State tempState : DFA.states){
+            //System.out.println(tempState.getName()+" vs "+currentState.getName());
+            if (tempState.getName().equals(currentState.getName())){
+                result = tempState.getAcceptState();
+            }
+        }
+
+        return result;
+    }
+    
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public State getNextState(State currentState, char input) {
+        for (Transition transition : currentState.getTransition()) {
+            if (transition.getSymbol() == input) {
+                System.out.println("Reach : "+ transition.getToState().getName());
+                System.out.println("--NEXT--");
+                return transition.getToState();
+            }
+        }
+        return null;
+    }
+    
 }
 
