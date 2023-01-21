@@ -351,6 +351,9 @@ public class mainScreenController {
         testButton.setDisable(true);
 
         btnImport.setDisable(false);
+
+        faInfo.clear();
+        faInfo.setVisible(false);
     }
     //use to draw
 
