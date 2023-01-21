@@ -1,4 +1,4 @@
-package importFile;
+package com.example.rgtonfa;
 
 import java.util.*;
 
@@ -6,7 +6,7 @@ public class RegularGrammar {
     String nonterminal; //Front
     //List<String> rightHandSide; //Stores multiple result as list element
     String rightHandSide; //Change to String for splitting a rule for different output
-    char input;
+    char input; //input(symbol) of a transition
 
     public RegularGrammar(String nonterminal, String rightHandSide, char input) { //List<String> rightHandSide
         this.nonterminal = nonterminal;
@@ -38,7 +38,7 @@ public class RegularGrammar {
             
             final char EPSILON = '\u03B5';
             char symbolInput = EPSILON;
-            String terminal = "F";
+            String terminal = String.valueOf(EPSILON); //Temporary 
 
             //Since right side can have multiple result, so store as a list
             List<String> rightHandSideList = new ArrayList<>();
@@ -49,13 +49,28 @@ public class RegularGrammar {
 
             //Add into list for each parsed regular grammar rules
             for (int i = 0; i < rightHandSideList.size(); i++) {
-                
+
                 for (int j = 0; j < rightHandSideList.get(i).length(); j++) {
-                    
-                    if (!(nonTerminal.contains(rightHandSideList.get(i).charAt(j)))) {
-                        symbolInput = rightHandSideList.get(i).charAt(j);
-                    } else {
-                        terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+
+                    if ((rightHandSideList.get(i).length() < 2)){
+                        ///Basically, if "A -> 0C", then input(symbol) is 0;
+                        ///But if "A -> C", then no input(symbol) before the next state, that means the input(symbol) is Epsilon
+                        if (!(nonTerminal.contains(rightHandSideList.get(i).charAt(j))) && (rightHandSideList.get(i).charAt(j) != 'F')) {
+                            //if has input(symbol)
+                            symbolInput = rightHandSideList.get(i).charAt(j);
+                            terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+
+                        } else { //if without input(symbol)
+                            symbolInput = EPSILON;
+                            terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+                        }
+                    } else { //if only one character on the right hand side
+                        if (!(nonTerminal.contains(rightHandSideList.get(i).charAt(j)))) {
+
+                            symbolInput = rightHandSideList.get(i).charAt(j);
+                        } else {
+                            terminal = String.valueOf(rightHandSideList.get(i).charAt(j));
+                        }
                     }
                 }
                 grammarRules.add(new RegularGrammar(nonterminal, terminal, symbolInput));
@@ -66,5 +81,3 @@ public class RegularGrammar {
     }
 
 }
-
-//check one character contain in a list in java?

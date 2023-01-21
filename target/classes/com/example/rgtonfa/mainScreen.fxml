@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="611.0" prefWidth="920.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.rgtonfa.mainScreenController">
+   <children>
+      <TabPane prefHeight="611.0" prefWidth="920.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Home">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="265.0" layoutY="40.0" text="TIC2151 Theory of Computation">
+                           <font>
+                              <Font name="System Bold Italic" size="26.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="349.0" layoutY="85.0" text="Tutorial No. TT2L ">
+                           <font>
+                              <Font name="System Bold Italic" size="26.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="377.0" layoutY="128.0" text="Group No. G6">
+                           <font>
+                              <Font name="System Bold Italic" size="26.0" />
+                           </font>
+                        </Label>
+                        <ImageView fitHeight="115.0" fitWidth="101.0" layoutX="235.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@ningkang.PNG" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="255.0" layoutY="299.0" text="Leader">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="235.0" layoutY="400.0" text="Member's Participation ">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <ImageView fitHeight="115.0" fitWidth="101.0" layoutX="366.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@ningkang.PNG" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="115.0" fitWidth="101.0" layoutX="501.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@ningkang.PNG" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="115.0" fitWidth="101.0" layoutX="632.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@ningkang.PNG" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="235.0" layoutY="430.0" text="Ng Wei Jian = 25%">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="368.0" layoutY="330.0" text="Ng Bei Sheng">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="507.0" layoutY="330.0" text="Tan Yong Qi">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="625.0" layoutY="330.0" text="Tang Ning Kang">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="242.0" layoutY="356.0" text="1171201847">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="373.0" layoutY="356.0" text="1191101917">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="507.0" layoutY="356.0" text="1191101570">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="639.0" layoutY="356.0" text="1191101645">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="235.0" layoutY="456.0" text="Ng Bei Sheng = 25%">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="235.0" layoutY="482.0" text="Tan Yong Qi = 25%">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="235.0" layoutY="508.0" text="Tang Ning Kang = 25%">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="243.0" layoutY="330.0" text="Ng Wei Jian">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="RG → FA">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="314.0" layoutY="14.0" text="Regular Grammar(Input)">
+                           <font>
+                              <Font name="System Bold" size="25.0" />
+                           </font>
+                        </Label>
+                        <TextArea fx:id="inputArea" editable="false" layoutX="272.0" layoutY="58.0" prefHeight="169.0" prefWidth="374.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font></TextArea>
+                        <Button fx:id="btnImport" layoutX="345.0" layoutY="234.0" mnemonicParsing="false" onAction="#onBtnImport" text="Import">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btnClear" layoutX="507.0" layoutY="234.0" mnemonicParsing="false" onAction="#onClearClick" text="Clear">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="nfaButton" disable="true" layoutX="79.0" layoutY="313.0" mnemonicParsing="false" onAction="#onNfaButtonClick" prefHeight="38.0" prefWidth="90.0" text="NFA">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="nfaEpsilonButton" disable="true" layoutX="79.0" layoutY="363.0" mnemonicParsing="false" onAction="#onNfaEpsilon" prefHeight="38.0" prefWidth="90.0" text="NFA → ε">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="mindfaButton" disable="true" layoutX="79.0" layoutY="461.0" mnemonicParsing="false" onAction="#onMinDfaButton" prefHeight="38.0" prefWidth="90.0" text="Min DFA">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="testButton" disable="true" layoutX="79.0" layoutY="509.0" mnemonicParsing="false" onAction="#onTestInputButton" prefHeight="38.0" prefWidth="90.0" text="Test">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="dfaButton" disable="true" layoutX="79.0" layoutY="413.0" mnemonicParsing="false" onAction="#onDfaButton" prefHeight="38.0" prefWidth="90.0" text="DFA">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                        <Pane fx:id="drawArea" layoutX="231.0" layoutY="301.0" prefHeight="254.0" prefWidth="582.0">
+                           <children>
+                              <TableView fx:id="stateTable" layoutX="397.0" layoutY="14.0" prefHeight="216.0" prefWidth="162.0" />
+                              <TextArea fx:id="testArea" layoutX="14.0" layoutY="14.0" prefHeight="184.0" prefWidth="260.0" visible="false">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </TextArea>
+                              <Button fx:id="executeButton" layoutX="112.0" layoutY="203.0" mnemonicParsing="false" onAction="#executeTest" prefHeight="11.0" prefWidth="90.0" text="Execute" visible="false">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                              <TextArea fx:id="resultArea" editable="false" layoutX="284.0" layoutY="14.0" prefHeight="184.0" prefWidth="68.0" visible="false">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </TextArea>
+                              <TextArea fx:id="faInfo" editable="false" layoutX="24.0" layoutY="10.0" prefHeight="216.0" prefWidth="343.0" visible="false">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </TextArea>
+                           </children>
+                        </Pane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Help">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
