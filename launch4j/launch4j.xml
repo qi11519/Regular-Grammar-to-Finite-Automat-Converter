@@ -2,7 +2,7 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>C:\Users\NICK\OneDrive\Desktop\TheoryOfComputation\Automation\src\main\java\com\example\rgtonfa\rgtonfa_jar.jar</jar>
+  <jar>C:\Users\NICK\OneDrive\Desktop\TheoryOfComputation\Automation\src\main\java\com\example\rgtonfa\rgtonfa.jar</jar>
   <outfile>C:\Users\NICK\OneDrive\Desktop\TheoryOfComputation\Automation\src\main\java\com\example\rgtonfa\Group16Assignment.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
