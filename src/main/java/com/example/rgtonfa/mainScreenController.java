@@ -10,18 +10,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static com.example.rgtonfa.JavaFileImport.findNFAResult;
 import static com.example.rgtonfa.JavaFileImport.findNFAwithoutEpsilonResult;
@@ -57,13 +54,15 @@ public class mainScreenController {
     @FXML
     private Button nfaEpsilonButton;
 
+    @FXML
+    private Button dfaButton;
 
-    //create a array
-    String[][] dataArray = new String[5][5];
+
+    FiniteAutomat finite_automat;
+    List<RegularGrammar> grammarRules;
 
     //Symbol for EPSILON
     final char EPSILON = '\u03B5';
-
 
     TableColumn<String[], String> stateCol = new TableColumn<>("State");
     TableColumn<String[], String> inputCol1 = new TableColumn<>("0");
@@ -71,36 +70,49 @@ public class mainScreenController {
 
     TableColumn<String[], String> inputCol3 = new TableColumn<>("3");
 
-
-
-
-
-
-    public void initialize() throws IOException {
-
-
-    }
-
-
-
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
 
-    @FXML
-    void onEpsilonClick(ActionEvent event) throws IOException {
-        //displayDiagram();
 
+    @FXML
+    void onEpsilonClick(ActionEvent event) {
+        //displayDiagram();
+        inputArea.appendText("ε");
 
     }
 
     @FXML
     void onArrowClick(ActionEvent event) throws IOException {
-        //clearAndAdd();
-        inputArea.appendText("→");
+
+        inputArea.appendText("->");
 
     }
+    @FXML
+    void onBtnImport(ActionEvent event) throws IOException {
+
+        String text = inputArea.getText();
+        String[] lines = text.split("\n");
+
+        try {
+            FileWriter fw = new FileWriter("regularGrammar.txt");
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for (String line : lines) {
+                bw.write(line);
+                bw.newLine();
+            }
+
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     @FXML
     void onClearClick(ActionEvent event) {
@@ -108,93 +120,47 @@ public class mainScreenController {
 
     }
     //use to draw
-//    void displayDiagram(){
-//        Canvas canvas = new Canvas();
-//        canvas.setWidth(300);
-//        canvas.setHeight(300);
-//        canvas.setLayoutX(40);
-//        canvas.setLayoutY(40);
-//        gc = canvas.getGraphicsContext2D();
-//
-//        //set line
-//
-//        gc.setStroke(Color.BLUE);
-//        gc.setLineWidth(4);
-//        //  gc.strokeLine(w,x,y,z);
-//        // w and x represent the x and y coordinates of the start point of the line. y and z represent the x and y coordinates of the end point of the line.
-//        gc.strokeLine(1,4,2, 10);
-//
-//        //set circle
-//
-//        gc.setStroke(Color.RED);
-//        gc.setLineWidth(4);
-//
-//        gc.strokeOval(10, 20, 40, 40);
-//
-//
-//        //text given
-//        gc.setStroke(Color.BLACK);
-//        gc.setLineWidth(1);
-//        gc.setFont(new Font("Arial", 20));
-//        gc.strokeText("Hello World!", 10, 50);
-//
-//
-//        drawArea.getChildren().add(canvas);
-//        primaryStage.show();
-//    }
 
-//    void clearAndAdd(){
-//        stateTable.getItems().clear();
-//        String[][] newDataArray = new String[][] {
-//                {"D", "0", "E"},
-//                {"E", "1", "F"},
-//                {"F", "epsilon", "D"}
-//        };
-//        stateTable.getColumns().clear();
-//// Create columns and set column titles
-//        TableColumn<String[], String> stateCol = new TableColumn<>("State");
-//        TableColumn<String[], String> inputCol = new TableColumn<>("Input");
-//        TableColumn<String[], String> nextCol = new TableColumn<>("Next State");
-//        stateTable.getColumns().addAll(stateCol, inputCol, nextCol);
-//        stateCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[0]));
-//        inputCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[1]));
-//        nextCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[2]));
-//        stateTable.setItems(FXCollections.observableArrayList(newDataArray));
-//        stateTable.refresh();
-//
-//
-//    }
+
     @FXML
     void onNfaButtonClick(ActionEvent event) throws IOException {
+        readFile();
+
         stateTable.getItems().clear();
         stateTable.getColumns().clear();
-
-
-        //Turn the content from 'regularGrammar.txt'
-        //into a RegularGrammar class object
-        List<RegularGrammar> grammarRules = RegularGrammar.parseGrammar(readFile());
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        //Convert RegularGrammar into NFA
-        NondeterministicFiniteAutomaton NFA = new NondeterministicFiniteAutomaton(grammarRules);
 
         //add column to table
         stateTable.getColumns().addAll(stateCol, inputCol1, inputCol2,inputCol3);
 
 
-    ///here are place to give data to it dynamic
-        char[] states = {'A', 'B', 'C'};
+        StringBuilder sb = new StringBuilder();
+        for (RegularGrammar rule : grammarRules) {
+            sb.append(rule.nonterminal);
+            System.out.println(rule.nonterminal);
+        }
+        char[] states = sb.toString().toCharArray();
+        Set<Character> statesSet = new HashSet<>();
+        for (char state : states) {
+            statesSet.add(state);
+        }
+        char[] uniqueStates = new char[statesSet.size()];
+        int a = 0;
+        for (char state : statesSet) {
+            uniqueStates[a] = state;
+            a++;
+        }
         char[] inputs = {'0', '1', EPSILON};
 
 
-        String[][] dataArray = new String[states.length][inputs.length+1];
+        String[][] dataArray = new String[uniqueStates.length][inputs.length+1];
 
-        for (int i = 0; i < states.length; i++) {
-            dataArray[i][0] = Character.toString(states[i]);
+        for (int i = 0; i < uniqueStates.length; i++) {
+            dataArray[i][0] = Character.toString(uniqueStates[i]);
             for (int j = 0; j < inputs.length; j++) {
-                dataArray[i][j+1] = findNFAResult(NFA, states[i], inputs[j]);
+                dataArray[i][j+1] = findNFAResult(finite_automat, uniqueStates[i], inputs[j]);
             }
         }
+
 
         //give a target for column to read the data, 0 represent the column will read [x][0] data
         stateCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[0]));
@@ -205,133 +171,169 @@ public class mainScreenController {
         //set data to table
         stateTable.setItems(FXCollections.observableArrayList(dataArray));
 
-
-
     }
     @FXML
     void onNfaEpsilon(ActionEvent event) throws IOException {
-        List<RegularGrammar> grammarRules = RegularGrammar.parseGrammar(readFile());
-        NondeterministicFiniteAutomaton NFA = new NondeterministicFiniteAutomaton(grammarRules);
-        NondeterministicFiniteAutomaton n = new NondeterministicFiniteAutomaton();
+        readFile();
+
+        stateTable.getItems().clear();
+        stateTable.getColumns().clear();
+
+        //List<RegularGrammar> grammarRules = RegularGrammar.parseGrammar(readFile());
+        //For the purpose of calling the function
+        //from the 'NondeterministicFiniteAutomaton' class
+        FiniteAutomat fa = new FiniteAutomat();
 
         //Keep track of which state/rule being visited
         List<LinkedList<Character>> visitedStates = new ArrayList<LinkedList<Character>>();
 
-        //Output of all state and its possible transition
-        for (NondeterministicFiniteAutomaton.State state : NFA.states) {
-            for (NondeterministicFiniteAutomaton.Transition transitions : state.transitions){
-                System.out.println(state.getName() + " to " + transitions.toState.getName());
-            }
-        }
+        //Keep track of which state/rule being visited
 
         //Testing of a function "checkReachFinal()" where it will test
         //if a state can reach final state
         //NFA.states.get(1) ---IS---> State A
         //then it will test if A can reach final state
-        System.out.println(n.checkReachFinal(NFA.states.get(1), NFA, visitedStates));
 
-        System.out.println("-----I AM A LINE-----");
 
         //Templist for storing the list of states of NFA without Epsilon
-        List<NondeterministicFiniteAutomaton.State> StatesWithoutEpsilon = new ArrayList<NondeterministicFiniteAutomaton.State>();
+        List<FiniteAutomat.State> StatesWithoutEpsilon = new ArrayList<FiniteAutomat.State>();
 
         //Templist that stored the states of NFA
-        List<NondeterministicFiniteAutomaton.State> oldStateList = NFA.states;
+        List<FiniteAutomat.State> oldStateList = finite_automat.states;
 
         //Convert states with EPSILON into without EPSILON, then add into the templist
-        StatesWithoutEpsilon = n.renewStates(NFA, oldStateList);
+        StatesWithoutEpsilon = fa.renewStates(finite_automat, oldStateList);
 
-        System.out.println("-----I AM A LINE-----");
 
         //Replace the current list of states of the NFA, which make it become NFA without EPSILON
-        NFA.setStateList(StatesWithoutEpsilon);
+        finite_automat.setStateList(StatesWithoutEpsilon);
 
-        for (NondeterministicFiniteAutomaton.State state : NFA.states) {
-            List<NondeterministicFiniteAutomaton.Transition> toStateName = state.getTransition();
+        for (FiniteAutomat.State state : finite_automat.states) {
+            List<FiniteAutomat.Transition> toStateName = state.getTransition();
 
-            for (NondeterministicFiniteAutomaton.Transition transition : toStateName) {
-                System.out.println("StartState: "+ state.getName() +", toState: "+ transition.toState.getName() +", Input: "+ transition.getSymbol());
-            }
         }
-
-        System.out.println("-----I AM A LINE-----");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         //PRINT A TABLE FOR NFA WITHOUT EPSILON, and set data to java fx
-        for (int i = 0; i < 3; i++) {
-            System.out.print("+");
-            for (int j = 0; j < 7 ; j++) {
-                System.out.print("-");
-            }
-        }
-        System.out.println("+");
 
-        System.out.print("| ");
-        System.out.printf("%-5s ", "XXX");
-        System.out.print("| ");
-        System.out.printf("%-5s ", "0");
-        System.out.print("| ");
-        System.out.printf("%-5s ", "1");
-        System.out.println("| ");
-
-        for (int i = 0; i < 3; i++) {
-            System.out.print("+");
-            for (int j = 0; j < 7 ; j++) {
-                System.out.print("-");
-            }
-        }
-        System.out.println("+");
 
         //here are place to give data dynamic
 
-        char[] states = {'A', 'B'};
+        StringBuilder sb = new StringBuilder();
+        for (RegularGrammar rule : grammarRules) {
+            sb.append(rule.nonterminal);
+            System.out.println(rule.nonterminal);
+        }
+        char[] statesNfa = sb.toString().toCharArray();
+        Set<Character> statesSet = new HashSet<>();
+        for (char state : statesNfa) {
+            statesSet.add(state);
+        }
+        char[] uniqueStatesNfa = new char[statesSet.size()];
+        int a = 0;
+        for (char state : statesSet) {
+            uniqueStatesNfa[a] = state;
+            a++;
+        }
         char[] inputs = {'0', '1'};
+        String[][] dataArray = new String[10][10];
 
-        for (int i = 0; i < states.length; i++) {
+        for (int i = 0; i < uniqueStatesNfa.length; i++) {
 
-            System.out.printf("|%-5s  ", states[i]);
-            dataArray[i][0] = Character.toString(states[i]);
+
+            dataArray[i][0] = Character.toString(uniqueStatesNfa[i]);
             for (int j = 0; j < inputs.length; j++) {
-                System.out.print("| ");
+
                 String result = "";
-                for (String foundState : findNFAwithoutEpsilonResult(NFA, states[i], inputs[j])) {
+                for (String foundState : findNFAwithoutEpsilonResult(finite_automat, uniqueStatesNfa[i], inputs[j])) {
                     result += foundState + " ";
-                    System.out.printf("%-2s    ", foundState);
+
                 }
                 dataArray[i][j+1] = result;
             }
-            System.out.println("| ");
-            for (int k = 0; k < 3; k++) {
-                System.out.print("+");
-                for (int l = 0; l < 7 ; l++) {
-                    System.out.print("-");
-                }
-            }
-            System.out.println("+");
+
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////////
 
-        System.out.println("-----I AM A LINE-----");
 
+        stateTable.getColumns().addAll(stateCol, inputCol1, inputCol2);
+
+        stateCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[0]));
+        inputCol1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[1]));
+        inputCol2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[2]));
+        stateTable.setItems(FXCollections.observableArrayList(dataArray));
+
+    }
+
+    @FXML
+    void onDfaButton(ActionEvent event) throws IOException {
 
         stateTable.getItems().clear();
         stateTable.getColumns().clear();
+
+        FiniteAutomat fa = new FiniteAutomat();
+        //Templist for storing the list of states of NFA without Epsilon
+        List<FiniteAutomat.State> dfaStates = new ArrayList<FiniteAutomat.State>();
+
+        //Templist that stored the states of NFA
+        List<FiniteAutomat.State> oldStateListwoEPSILON = finite_automat.states;
+
+        dfaStates = fa.convertToDFA(finite_automat, oldStateListwoEPSILON);
+
+        //Replace the current list of states of the NFA, which make it become NFA without EPSILON
+        finite_automat.setStateList(dfaStates);
+
+
+        int index =0;
+        String[][] dataArray = new String[10][10];
+
+        for (FiniteAutomat.State state : finite_automat.states) {
+            // Create a new table row
+            //TableRow<String[]> row = new TableRow<>();
+           // String[] data = new String[3];
+            dataArray[index][0] = state.getName();
+            for (FiniteAutomat.Transition transition : state.getTransition()) {
+                if (transition.getSymbol() == '0') {
+
+                    if(transition.getToState().getName().equals("Z")){
+                        System.out.println("fucker");
+                        dataArray[index][1]="Z";
+                    }
+                    else{
+                        dataArray[index][1] = transition.getToState().getName();
+
+                    }
+                } else if (transition.getSymbol() == '1') {
+                    if(transition.getToState().getName()=="Z"){
+                        dataArray[index][2] = "Z";
+                    }
+                    else {
+                        dataArray[index][2] = transition.getToState().getName();
+                    }
+                }
+            }
+            index++;
+
+        }
         stateTable.getColumns().addAll(stateCol, inputCol1, inputCol2);
 
         stateCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[0]));
         inputCol1.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[1]));
         inputCol2.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue()[2]));
 
+
         stateTable.setItems(FXCollections.observableArrayList(dataArray));
-
-
-
 
 
     }
     List<String> readFile() throws IOException {
+
         List<String> textLines = Files.readAllLines(Paths.get("regularGrammar.txt"));
         List<String> ruleStringList = new ArrayList<>();
+
+        //Symbol for EPSILON
+        final char EPSILON = '\u03B5';
+
+        System.out.println("-----I AM A LINE-----");
 
         //Turn the the content from 'regularGrammar.txt' content into
         //Each grammar rule per line
@@ -340,17 +342,12 @@ public class mainScreenController {
             System.out.println(ruleString);
             ruleStringList.add(ruleString);
         }
+        this.grammarRules=RegularGrammar.parseGrammar(ruleStringList);
+
+        this.finite_automat=new FiniteAutomat(grammarRules);
         return ruleStringList;
 
 
-    }
-    @FXML
-    void onBtnImport(ActionEvent event) throws IOException {
-        List<String> ruleStringList = readFile();
-
-        for (String rule : ruleStringList) {
-            inputArea.appendText(rule + "\n");
-        }
     }
 
 

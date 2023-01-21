@@ -5,8 +5,13 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.List;
 
+<<<<<<< Updated upstream
 import importFile.NondeterministicFiniteAutomaton.State;
 import importFile.NondeterministicFiniteAutomaton.Transition;
+=======
+//import importFile.FiniteAutomat.State;
+//import importFile.FiniteAutomat.Transition;
+>>>>>>> Stashed changes
 
 import java.util.*;
 
