@@ -1,0 +1,9 @@
+User manual
+1. Import txt file.
+2. Click Nfa button to view nfa result.
+3. Click Nfa without epsilon button to view nfa without epsilon result.
+4. Click Dfa bytton to view Dfa result.
+5. Click minDfa button to show minimize dfa result.
+6. Click the test button.
+7. Put the 0 or 1 number string to the writing area.
+8. Press the execute button to show result.  
