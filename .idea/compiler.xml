@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="rgtonfa" target="18" />
+      <module name="rgtonfa" target="13" />
     </bytecodeTargetLevel>
   </component>
 </project>
