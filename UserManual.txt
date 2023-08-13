@@ -1,5 +1,5 @@
 User manual
-1. Import txt file.
+1. Import regularGrammer.txt file(apply change to the content of the txt file if needed).
 2. Click Nfa button to view nfa result.
 3. Click Nfa without epsilon button to view nfa without epsilon result.
 4. Click Dfa bytton to view Dfa result.
